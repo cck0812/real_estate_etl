@@ -1,0 +1,48 @@
+version: "2.2"
+services:
+  real-estate-crawler:
+    build:
+      context: ./real_estate_crawler
+      dockerfile: Dockerfile.real_estate_crawler
+    image: real_estate_crawler
+    volumes:
+      - ./real_estate_crawler:/code
+      - real-estate-data-volume:/code/data
+    stdin_open: true
+    tty: true
+  real-estate-api:
+    build:
+      context: ./real_estate_api
+      dockerfile: Dockerfile.real_estate_api
+    image: real_estate_api
+    volumes:
+      - ./real_estate_api:/code
+      - real-estate-data-volume:/code/data
+    ports:
+      - "5000:5000"
+    stdin_open: true
+    tty: true
+  spark-master:
+    image: docker.io/bitnami/spark:3
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - "8080:8080"
+  spark-worker:
+    image: docker.io/bitnami/spark:3
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+
+volumes:
+  real-estate-data-volume:
