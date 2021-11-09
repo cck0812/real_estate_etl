@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
+"""Handle real estate data from https://plvr.land.moi.gov.tw/DownloadOpenData"""
 import asyncio
 import itertools
 import logging
@@ -8,9 +9,8 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 import aiofiles
-from requests_html import AsyncHTMLSession
-
 import constants
+from requests_html import AsyncHTMLSession
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +24,14 @@ class RealEstateHandler:
         return AsyncHTMLSession()
 
     def get_target_urls(self, year, season):
+        """
+        Get url list for crawling
+
+        :param int year: Year of real estate data
+        :param int season season: Season of real estate data
+        :return: Valid real estate urls
+        :rtype Generator
+        """
         city_code_list = constants.get_city_code_list()
         sale_purchase_code_list = constants.get_sale_purchase_code_list()
 
@@ -37,6 +45,14 @@ class RealEstateHandler:
             )
 
     async def crawl_url(self, url, **kwargs):
+        """
+        Async request to crawl concurrently
+
+        :param string url: A valid real estate url
+        :param **kwargs: Parameters of request method
+        :return: Response from url
+        :rtype HTMLResponse
+        """
         await asyncio.sleep(constants.REQUEST_INTERVAL)
 
         resp = await self.asession.get(url, **kwargs)
@@ -66,15 +82,18 @@ class RealEstateHandler:
         city_code = fn_noext[0]
         sale_purchase_code = fn_noext[-1]
 
+        # Find actual city name in the mapping dictionary
         city_name = [
             key for key, val in constants.CITY_MAPPING_DICT.items() if val == city_code
         ][0]
+        # Find actual sale and purchase type in the mapping dictionary
         sale_purchase_type = [
             key
             for key, val in constants.SALE_PURCHASE_TYPE_MAPPING_DICT.items()
             if val == sale_purchase_code
         ][0]
 
+        # Reformat file name and add 'city name', 'sale and purchase type' dimensions
         fname = f"{city_name}_{sale_purchase_type}{ext}"
 
         return fname

@@ -1,14 +1,16 @@
 # syntax=docker/dockerfile:1
 ARG FUNCTION_DIR="/code/"
-ARG RUNTIME_VERSION="3.8"
+ARG RUNTIME_VERSION="3.6"
 ARG DISTRO_VERSION="3.12"
 
-# Install build dependencies
+# Install spark client, build dependencies
 FROM python:${RUNTIME_VERSION}-alpine${DISTRO_VERSION} AS python-alpine
 RUN apk add --no-cache \
     libstdc++ \
     libxslt \
-    libc-dev
+    libc-dev \
+    bash \
+    openjdk11
 
 # Build dependencies
 FROM python-alpine AS build-image
