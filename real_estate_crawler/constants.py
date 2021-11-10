@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 import logging
-import os
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
 ROOT_DIR = "/code"
-DATA_DIR = os.path.join(ROOT_DIR, "data")
+DATA_DIR = "/data"
 
 CITY_MAPPING_DICT = {"台北市": "A", "新北市": "B", "桃園市": "E", "台中市": "F", "高雄市": "H"}
 SALE_PURCHASE_TYPE_MAPPING_DICT = {"不動產買賣": "A", "預售屋買賣": "B", "不動產租賃": "C"}

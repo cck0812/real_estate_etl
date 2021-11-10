@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 """Handle real estate data from https://plvr.land.moi.gov.tw/DownloadOpenData"""
+import argparse
 import asyncio
 import itertools
 import logging
@@ -9,8 +10,9 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 import aiofiles
-import constants
 from requests_html import AsyncHTMLSession
+
+import constants
 
 logger = logging.getLogger(__name__)
 
@@ -115,8 +117,31 @@ class RealEstateHandler:
 
 
 def main():
-    handler = RealEstateHandler()
-    asyncio.run(handler.bulk_get_real_estate_data(108, 2))
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        "year",
+        nargs="?",
+        type=int,
+        help="Assign a chinese era name of year, e.g., 109, 110",
+    )
+    arg_parser.add_argument(
+        "season",
+        nargs="?",
+        type=int,
+        help="Assign a season, e.g., 1, 2, 3, 4",
+    )
+    args = arg_parser.parse_args()
+
+    year, season = args.year, args.season
+    if year is None or season is None:
+        logger.warning("Please assign both year and season arguments !")
+
+    else:
+        try:
+            handler = RealEstateHandler()
+            asyncio.run(handler.bulk_get_real_estate_data(year, season))
+        except Exception as err:
+            logger.error(err)
 
 
 if __name__ == "__main__":

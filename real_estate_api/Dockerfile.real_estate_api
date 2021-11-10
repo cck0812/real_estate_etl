@@ -3,7 +3,7 @@ ARG FUNCTION_DIR="/code/"
 ARG RUNTIME_VERSION="3.6"
 ARG DISTRO_VERSION="3.12"
 
-# Install spark client, build dependencies
+# Install spark driver, build dependencies
 FROM python:${RUNTIME_VERSION}-alpine${DISTRO_VERSION} AS python-alpine
 RUN apk add --no-cache \
     libstdc++ \

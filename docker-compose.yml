@@ -7,7 +7,7 @@ services:
     image: real_estate_crawler
     volumes:
       - ./real_estate_crawler:/code
-      - real-estate-data-volume:/code/data
+      - real-estate-data-volume:/data
     stdin_open: true
     tty: true
   real-estate-api:
@@ -17,13 +17,13 @@ services:
     image: real_estate_api
     volumes:
       - ./real_estate_api:/code
-      - real-estate-data-volume:/code/data
+      - real-estate-data-volume:/data
     ports:
       - "5000:5000"
     stdin_open: true
     tty: true
   spark-master:
-    image: docker.io/bitnami/spark:3
+    image: docker.io/bitnami/spark:3.2.0
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
@@ -32,8 +32,10 @@ services:
       - SPARK_SSL_ENABLED=no
     ports:
       - "8080:8080"
+    volumes:
+      - real-estate-data-volume:/data
   spark-worker:
-    image: docker.io/bitnami/spark:3
+    image: docker.io/bitnami/spark:3.2.0
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
@@ -43,6 +45,8 @@ services:
       - SPARK_RPC_ENCRYPTION_ENABLED=no
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
+    volumes:
+      - real-estate-data-volume:/data
 
 volumes:
   real-estate-data-volume:
