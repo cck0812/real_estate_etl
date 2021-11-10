@@ -5,23 +5,26 @@ services:
       context: ./real_estate_crawler
       dockerfile: Dockerfile.real_estate_crawler
     image: real_estate_crawler
+    container_name: crawler
     volumes:
       - ./real_estate_crawler:/code
       - real-estate-data-volume:/data
     stdin_open: true
     tty: true
+
   real-estate-api:
     build:
       context: ./real_estate_api
       dockerfile: Dockerfile.real_estate_api
     image: real_estate_api
+    container_name: api
     volumes:
       - ./real_estate_api:/code
       - real-estate-data-volume:/data
     ports:
       - "5000:5000"
-    stdin_open: true
-    tty: true
+    entrypoint: ["python", "/code/api.py"]
+
   spark-master:
     image: docker.io/bitnami/spark:3.2.0
     environment:
@@ -34,6 +37,7 @@ services:
       - "8080:8080"
     volumes:
       - real-estate-data-volume:/data
+
   spark-worker:
     image: docker.io/bitnami/spark:3.2.0
     environment:
