@@ -85,18 +85,18 @@ class RealEstateHandler:
         sale_purchase_code = fn_noext[-1]
 
         # Find actual city name in the mapping dictionary
-        city_name = [
-            key for key, val in constants.CITY_MAPPING_DICT.items() if val == city_code
-        ][0]
+        # city_name = [
+        #     key for key, val in constants.CITY_MAPPING_DICT.items() if val == city_code
+        # ][0]
         # Find actual sale and purchase type in the mapping dictionary
-        sale_purchase_type = [
-            key
-            for key, val in constants.SALE_PURCHASE_TYPE_MAPPING_DICT.items()
-            if val == sale_purchase_code
-        ][0]
+        # sale_purchase_type = [
+        #     key
+        #     for key, val in constants.SALE_PURCHASE_TYPE_MAPPING_DICT.items()
+        #     if val == sale_purchase_code
+        # ][0]
 
-        # Reformat file name and add 'city name', 'sale and purchase type' dimensions
-        fname = f"{city_name}_{sale_purchase_type}{ext}"
+        # Reformat file name and add 'city code', 'sale and purchase code' dimensions
+        fname = f"{city_code}_{sale_purchase_code}{ext}"
 
         return fname
 

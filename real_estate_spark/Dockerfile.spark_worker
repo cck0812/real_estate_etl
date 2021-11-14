@@ -1,0 +1,9 @@
+FROM bitnami/spark:3.2.0
+
+USER root
+#Upgrade pip
+RUN pip3 install --no-cache-dir -U pip
+#The upgrade setuptools 
+RUN rm -r /opt/bitnami/python/lib/python3.6/site-packages/setuptools*
+RUN pip install cn2an
+USER 1001

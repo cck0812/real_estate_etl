@@ -4,7 +4,7 @@
 
 Setup the develop environment.
 
-    docker-compose up -d real-estate-crawler real-estate-api
+    docker-compose up -d
 
 After the `docker-compose up`, then get the data.
 

@@ -7,6 +7,7 @@ from glob import glob
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
+from constants import CITY_MAPPING_DICT, SALE_PURCHASE_TYPE_MAPPING_DICT
 from udfs import convert_chinese_num, convert_time
 
 logger = logging.getLogger(__name__)
@@ -37,7 +38,12 @@ class SparkSQLTransformer:
         """
 
         fname = os.path.splitext(os.path.basename(fp))[0]
-        city_name, sale_purchase_type = fname.split("_")
+        city_code, sale_purchase_type = fname.split("_")
+
+        # Find actual city name from mapping dictionary
+        city_name = [key for key, val in CITY_MAPPING_DICT.items() if val == city_code][
+            0
+        ]
 
         # Drop irrelevant data
         df = df.filter(df["鄉鎮市區"] != "The villages and towns urban district")
@@ -54,7 +60,7 @@ class SparkSQLTransformer:
         """Read CSV data from target path and merge all the dataset"""
 
         merged_df = None
-        fp_list = glob(os.path.join(target_path, "*"))
+        fp_list = glob(os.path.join(target_path, "**", "*.csv"), recursive=True)
 
         for fp in fp_list:
             df = self.session.read.csv(fp, header=True)

@@ -8,13 +8,14 @@ from flask import Flask
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import functions as F
 
+from constants import DATA_DIR
 from transformer import SparkSQLTransformer
 
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-spark_transformer = SparkSQLTransformer(target_path="/data/108/Q2/")
+spark_transformer = SparkSQLTransformer(target_path=DATA_DIR)
 
 
 @app.route("/data/<district>/<total_floor_number>/<building_state>")

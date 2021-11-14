@@ -20,6 +20,7 @@ services:
     container_name: api
     volumes:
       - ./real_estate_api:/code
+      - ./real_estate_crawler/constants.py:/code/constants.py
       - real-estate-data-volume:/data
     ports:
       - "5000:5000"
@@ -39,7 +40,10 @@ services:
       - real-estate-data-volume:/data
 
   spark-worker:
-    image: docker.io/bitnami/spark:3.2.0
+    build:
+      context: ./real_estate_spark
+      dockerfile: Dockerfile.spark_worker
+    image: real_estate_spark_worker
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
